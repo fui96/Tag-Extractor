@@ -45,10 +45,11 @@ public class WordHashMap {
         BufferedReader br = new BufferedReader(new FileReader(targetText));
         String line;
         while((line = br.readLine()) != null){
-            String[] words = line.toLowerCase().split("\\W+");
+            String[] words = line.toLowerCase().split("\s");
             for(String word : words){
+                word = word.toLowerCase().trim().replaceAll("[^a-z]","");
                 if(!stopWords.contains(word) && !word.isEmpty() && word.length() > 1){
-                    word = word.toLowerCase();
+                    word = word.toLowerCase().trim();
                     content.add(word);
                 }
             }
@@ -62,8 +63,6 @@ public class WordHashMap {
 
 
     public Set<String> loadStopWords() throws IOException {
-
-
         Set<String> words = new HashSet<String>();
         BufferedReader br = new BufferedReader(new FileReader("src/sortedStopWords.txt"));
         String line;

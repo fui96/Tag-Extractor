@@ -1,0 +1,10 @@
+gatsby: 194
+tom: 175
+daisy: 147
+gutenberg: 88
+eyes: 86
+old: 83
+car: 73
+night: 71
+door: 68
+gatsbys: 67

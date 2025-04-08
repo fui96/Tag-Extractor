@@ -65,7 +65,7 @@ public class WordHashMap {
 
 
         Set<String> words = new HashSet<String>();
-        BufferedReader br = new BufferedReader(new FileReader("src/English Stop Words.txt"));
+        BufferedReader br = new BufferedReader(new FileReader("src/sortedStopWords.txt"));
         String line;
         while ((line = br.readLine()) != null) {
             words.add(line.toLowerCase().trim());

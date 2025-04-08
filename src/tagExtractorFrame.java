@@ -1,12 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.nio.*;
+import java.io.*;
 
 public class tagExtractorFrame extends javax.swing.JFrame {
 
@@ -16,7 +17,7 @@ public class tagExtractorFrame extends javax.swing.JFrame {
     //Panels
     JPanel MainPanel, BottomPanel, CenterPanel;
     //Buttons
-    JButton GetTag;
+    JButton GetTag,SaveTag;
     //Text Areas
     JTextArea TagArea;
     //Scroll Panes
@@ -49,6 +50,7 @@ public class tagExtractorFrame extends javax.swing.JFrame {
         MainPanel.setLayout(new BorderLayout());
     }
 
+
     public void CreateTextPanel(){
         CenterPanel = new JPanel();
         CenterPanel.setLayout(new BorderLayout());
@@ -57,7 +59,7 @@ public class tagExtractorFrame extends javax.swing.JFrame {
         TagArea.setEditable(false);
         TagScrollPane = new JScrollPane(TagArea);
 
-        CenterPanel.add(TagScrollPane, BorderLayout.CENTER);
+        CenterPanel.add(TagScrollPane, BorderLayout.SOUTH);
 
     }
 
@@ -73,7 +75,15 @@ public class tagExtractorFrame extends javax.swing.JFrame {
                 throw new RuntimeException(e);
             }
         });
+
+        SaveTag = new JButton("Save Tags");
+        SaveTag.addActionListener((ActionEvent ae) -> {
+
+        });
+
         BottomPanel.add(GetTag, BorderLayout.CENTER);
+
+
     }
 
     public void getTagSet() throws IOException {
@@ -93,11 +103,45 @@ public class tagExtractorFrame extends javax.swing.JFrame {
                 .sorted((a, b) -> b.getValue().compareTo(a.getValue()))
                 .limit(10)
                 .forEach(entry -> {
-                        System.out.println(entry.getKey() + " " + entry.getValue());
                         tagText.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
                 });
 
         TagArea.setText(tagText.toString());
+
+    }
+
+    public void saveTags() throws IOException {
+        StringBuilder tagText = new StringBuilder();
+        tagSet.entrySet()
+                .stream()
+                .sorted((a,b) -> b.getValue().compareTo(a.getValue()))
+                .limit(10)
+                .forEach(entry -> {
+                    tagText.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+                });
+        String tagExport = tagText.toString();
+        //Create Dialog Prompt
+        JOptionPane.showMessageDialog(null,"Choose a file to save to","SaveTags",JOptionPane.PLAIN_MESSAGE);
+        //Get Output File
+        JFileChooser chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new File(System.getProperty("user.dir") + "/src"));
+        String ExportFile = "";
+        int returnVal = chooser.showSaveDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            ExportFile = chooser.getSelectedFile().toString();
+        }
+        else{
+            JOptionPane.showMessageDialog(null,"No file chosen","SaveTags",JOptionPane.ERROR_MESSAGE);
+        }
+
+        try {
+            BufferedWriter bw  = new BufferedWriter( new FileWriter(ExportFile));
+            bw.write(tagExport);
+            bw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 
